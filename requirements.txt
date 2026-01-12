@@ -9,3 +9,4 @@ azure-mgmt-costmanagement
 azure-monitor-query
 python-dotenv              # for .env files
 pydantic
+alembic                    # for database migrations
