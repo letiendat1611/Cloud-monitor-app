@@ -14,10 +14,10 @@ class VMResource(Base):
     location = Column(String)
     status = Column(String)
     size = Column(String, nullable=True)
-    fetched_at = Column(DateTime, default=datetime.utcnow)
+    fetched_at = Column(DateTime, default=datetime.now())
 
 # Database URL from environment (from docker-compose)
 DATABASE_URL = "postgresql://postgres:devsecret@db:5432/cloudmonitor"
 
 engine = create_engine(DATABASE_URL)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+SessionLocal = sessionmaker(autocommit=False, bind=engine)
