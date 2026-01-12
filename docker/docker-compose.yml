@@ -1,0 +1,30 @@
+services:
+  api:
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile   # or just Dockerfile if you prefer
+    ports:
+      - "8000:8000"
+    volumes:
+      - ../:/app
+      - /app/.venv
+    depends_on:
+      - db
+    environment:
+      - DATABASE_URL=postgresql://postgres:devsecret@db:5432/cloudmonitor
+      - PYTHONUNBUFFERED=1
+
+  db:
+    image: postgres:16           # or postgres:15-alpine for smaller size
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: devsecret     # change in real projects!
+      POSTGRES_DB: cloudmonitor
+    ports:
+      - "5433:5432"              # access DB locally on 5433 if needed (e.g. pgAdmin)
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:

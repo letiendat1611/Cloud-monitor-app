@@ -1,0 +1,56 @@
+# Python cache & bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environments (very important!)
+.venv/
+venv/
+env/
+.venv
+ENV/
+
+# Testing & coverage
+.pytest_cache/
+.coverage
+coverage.xml
+htmlcov/
+.coverage.*
+
+# IDE / Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Logs and temporary files
+*.log
+tmp/
+temp/
+*.tmp
+
+# Local configuration & secrets (critical!)
+.env
+.env.*
+!.env.example          # ← only if you have a safe example file
+.azure/                # Azure CLI credentials folder
+.aws/
+
+# Git & version control
+.git
+.gitignore
+
+# Docker-related files (no need to copy them into image)
+Dockerfile
+docker-compose*
+.dockerignore
+
+# Project docs & extras (optional but recommended)
+README.md
+docs/
+tests/
+test_*/

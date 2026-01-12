@@ -1,0 +1,11 @@
+fastapi
+uvicorn[standard]          # for hot-reload & better logging
+sqlalchemy
+psycopg2-binary            # PostgreSQL driver
+azure-identity
+azure-mgmt-compute
+azure-mgmt-resource
+azure-mgmt-costmanagement
+azure-monitor-query
+python-dotenv              # for .env files
+pydantic
