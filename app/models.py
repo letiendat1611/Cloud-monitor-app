@@ -20,4 +20,4 @@ class VMResource(Base):
 DATABASE_URL = "postgresql://postgres:devsecret@db:5432/cloudmonitor"
 
 engine = create_engine(DATABASE_URL)
-SessionLocal = sessionmaker(autocommit=False, bind=engine)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False,bind=engine)

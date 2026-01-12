@@ -30,7 +30,12 @@ def get_vms(db: Session = Depends(get_db)):
 
         compute_client = ComputeManagementClient(credential, sub_id)
         
+        # Load existing VM rows into a map for quick lookup
+        existing_vms = db.query(VMResource).all()
+        existing_vm_map = {(vm.name, vm.resource_group): vm for vm in existing_vms}
+
         vms = []
+        azure_vm_set = set()
 
         for vm in compute_client.virtual_machines.list_all():
             status = "Unknown"
@@ -49,18 +54,34 @@ def get_vms(db: Session = Depends(get_db)):
             }
             vms.append(vm_data)
 
-            # Save to DB
-            db_vm = VMResource(
-                name=vm.name,
-                resource_group=vm_data["resource_group"],
-                location=vm.location,
-                status=status,
-                size=vm_data["size"],
-                fetched_at=datetime.now()
-            )
-            db.add(db_vm)
+            key = (vm.name, vm_data["resource_group"])
+            azure_vm_set.add(key)
 
-        db.commit()  # Save all at once
+            if key in existing_vm_map:
+                # Update the existing DB row in-place (SQLAlchemy will track changes)
+                db_vm = existing_vm_map[key]
+                db_vm.location = vm_data["location"]
+                db_vm.status = vm_data["status"]
+                db_vm.size = vm_data["size"]
+                db_vm.fetched_at = datetime.now()
+            else:
+                # Insert new record
+                db_vm = VMResource(
+                    name=vm.name,
+                    resource_group=vm_data["resource_group"],
+                    location=vm.location,
+                    status=status,
+                    size=vm_data["size"],
+                    fetched_at=datetime.now()
+                )
+                db.add(db_vm)
+
+        # Remove DB rows that are no longer present in Azure
+        for key, db_vm in existing_vm_map.items():
+            if key not in azure_vm_set:
+                db.delete(db_vm)
+
+        db.commit()  # Save all changes (inserts/updates/deletes)
 
         return {
             "success": True,
