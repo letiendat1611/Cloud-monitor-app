@@ -8,6 +8,7 @@ services:
     volumes:
       - ../:/app
       - /app/.venv
+      - C:/Users/User/.azure:/root/.azure
     depends_on:
       - db
     environment:
